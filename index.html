@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Web Host | Hosting Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Rajdhani:wght@300;500;700&display=swap');
+
+        :root {
+            --neon: #bf00ff;
+            --neon-glow: rgba(191, 0, 255, 0.4);
+            --bg: #050505;
+            --surface: #0a0a0a;
+            --border: rgba(191, 0, 255, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background: var(--bg); 
+            color: #fff; 
+            font-family: 'Rajdhani', sans-serif; 
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #starfield {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #110022 0%, #050505 100%);
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 8%; background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(15px); border-bottom: 2px solid var(--border);
+            position: fixed; width: 100%; z-index: 1000;
+        }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-box { width:65px; height: 65px; display: flex; align-items: center; justify-content: center; }
+        .logo-box img { width: 260%; filter: drop-shadow(0 0 13px var(--neon)); animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 13px var(--neon)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 20px var(--neon)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 13px var(--neon)); }
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 25px; }
+        .social-link {
+            color: var(--neon); text-decoration: none; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .social-link:hover { text-shadow: 0 0 10px var(--neon); transform: translateY(-2px); }
+
+        /* ANIMACIÓN SHINE TÍTULO */
+        .hero { text-align: center; padding: 180px 20px 20px; }
+        .hero-title { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: clamp(3rem, 10vw, 7rem); 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            color: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(120deg, transparent 30%, #fff 50%, transparent 70%);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: shine 4s linear infinite;
+            text-shadow: 0 0 20px var(--neon-glow);
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* MANTENIMIENTO */
+        .maint-container { max-width: 800px; margin: 20px auto; border: 1px solid var(--neon); border-radius: 4px; overflow: hidden; position: relative; z-index: 1; }
+        .maint-header { background: rgba(191, 0, 255, 0.15); padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: var(--neon); }
+        .maint-body { max-height: 0; padding: 0 20px; transition: all 0.5s ease; background: rgba(0,0,0,0.85); color: #ccc; }
+        .maint-container.active .maint-body { max-height: 200px; padding: 20px; border-top: 1px solid var(--neon); }
+
+        /* SELECTOR DE FACTURACIÓN */
+        .billing-toggle-container { display: flex; justify-content: center; margin: 30px 0 50px; position: relative; z-index: 10; }
+        .billing-wrapper {
+            background: #111; border: 1px solid var(--neon);
+            border-radius: 12px; display: grid; grid-template-columns: repeat(4, 1fr);
+            padding: 5px; width: 100%; max-width: 600px;
+        }
+        .billing-opt { padding: 15px 10px; cursor: pointer; border-radius: 8px; transition: 0.3s; text-align: center; display: flex; flex-direction: column; gap: 5px; }
+        .billing-opt span:first-child { font-weight: 900; font-size: 1.1rem; }
+        .billing-opt span:last-child { font-size: 0.8rem; opacity: 0.6; }
+        .billing-opt.active { background: var(--neon); color: #fff; box-shadow: 0 0 15px var(--neon-glow); }
+
+        /* ANIMACIÓN ESCÁNER EN PLANES */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 0 8% 60px; position: relative; z-index: 1; }
+        .card { 
+            background: rgba(10, 10, 10, 0.8); border: 1px solid #1a1a1a; 
+            padding: 40px; transition: 0.3s; text-align: center; 
+            backdrop-filter: blur(5px); overflow: hidden; position: relative;
+        }
+        .card::before {
+            content: '';
+            position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent, var(--neon), transparent);
+            opacity: 0.1;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+        .card:hover { border-color: var(--neon); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(191, 0, 255, 0.2); }
+        .package-logo { width: 150px; height: 150px; margin-bottom: 20px; object-fit: contain; }
+        .p-name { font-family: 'Orbitron'; font-size: 1.5rem; color: var(--neon); }
+        .p-price { font-size: 2.8rem; font-weight: 700; margin: 15px 0; }
+        .p-price span { font-size: 1rem; color: #555; }
+        .specs { list-style: none; margin-bottom: 30px; text-align: left; color: #888; }
+        .specs li { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .specs i { color: var(--neon); }
+        .lock-btn { width: 100%; padding: 15px; background: #111; border: 1px solid #222; color: #444; font-weight: 900; cursor: not-allowed; }
+
+        /* SECCIÓN INFORMACIÓN */
+        .info-section { max-width: 1000px; margin: 60px auto 40px; padding: 40px; background: rgba(191, 0, 255, 0.03); border: 1px solid var(--border); border-radius: 8px; position: relative; z-index: 1; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .info-item h4 { font-family: 'Orbitron'; color: var(--neon); margin-bottom: 10px; }
+        .info-item p { color: #aaa; font-size: 0.95rem; }
+
+        /* PROXIMAMENTE CLOUD */
+        .cloud-soon {
+            max-width: 1000px; margin: 0 auto 100px; padding: 30px;
+            text-align: center; border: 1px dashed var(--neon);
+            background: linear-gradient(90deg, transparent, rgba(191, 0, 255, 0.1), transparent);
+            position: relative; overflow: hidden;
+        }
+        .cloud-soon h3 { font-family: 'Orbitron'; color: #fff; letter-spacing: 3px; font-size: 1.5rem; }
+        .cloud-soon p { color: var(--neon); font-weight: 700; margin-top: 10px; text-transform: uppercase; }
+
+        #alert { position: fixed; bottom: 30px; right: 30px; background: #bf00ff; color: white; padding: 20px 40px; border-radius: 4px; display: none; z-index: 2000; }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+
+    <nav>
+        <div class="logo-area">
+            <div class="logo-box"><img src="https://cdn.discordapp.com/attachments/1420079817650475140/1460011325399896075/Gemini_Generated_Image_gqy1stgqy1stgqy1-removebg-preview__1_-removebg-preview.png?ex=69655d01&is=69640b81&hm=1cf1f30c0e240fb8cc2d710d0761259c5cd3af71420ee2de9e85218932291678" alt="Logo"></div>
+        </div>
+        <div class="nav-links">
+            <a href="https://www.instagram.com/corewebhost/" target="_blank" class="social-link">
+                <i class="fa-brands fa-instagram"></i> INSTAGRAM
+            </a>
+            <a href="https://discord.gg/fRwwmFZM" target="_blank" class="social-link">
+                <i class="fa-brands fa-discord"></i> SOPORTE
+            </a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1 class="hero-title">CORE WEB HOST</h1>
+
+        <div class="maint-container" id="maint">
+            <div class="maint-header" onclick="document.getElementById('maint').classList.toggle('active')">
+                <span><i class="fa-solid fa-triangle-exclamation"></i> MANTENIMIENTO ACTIVO</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="maint-body">
+                Estamos optimizando los nodos AMD EPYC. Las compras están pausadas temporalmente.
+            </div>
+        </div>
+
+        <div class="billing-toggle-container">
+            <div class="billing-wrapper">
+                <div class="billing-opt" onclick="updateBilling('weekly', 0.25, 1.25, this)">
+                    <span>Semanal</span>
+                    <span>7 Días</span>
+                </div>
+                <div class="billing-opt active" onclick="updateBilling('monthly', 1, 1, this)">
+                    <span>Mensual</span>
+                    <span>30 Días</span>
+                </div>
+                <div class="billing-opt" onclick="updateBilling('quarterly', 3, 0.875, this)">
+                    <span>Trimestral</span>
+                    <span>-12.5% Desc.</span>
+                </div>
+                <div class="billing-opt" onclick="updateBilling('yearly', 12, 0.75, this)">
+                    <span>Anual</span>
+                    <span>-25% Desc.</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="grid" id="planes-grid"></div>
+
+    <section class="info-section">
+        <h3 style="font-family: 'Orbitron'; text-align: center; margin-bottom: 30px;">INFRAESTRUCTURA</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <h4><i class="fa-solid fa-microchip"></i> AMD EPYC™</h4>
+                <p>Potencia de última generación para procesos exigentes.</p>
+            </div>
+            <div class="info-item">
+                <h4><i class="fa-solid fa-shield-halved"></i> Path.net DDoS</h4>
+                <p>Mitigación avanzada para asegurar tu disponibilidad.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="cloud-soon">
+        <h3>CORE WEB CLOUD</h3>
+        <p><i class="fa-solid fa-bolt"></i> Los planes serán agregados próximamente <i class="fa-solid fa-bolt"></i></p>
+    </div>
+
+    <footer style="padding: 40px 0; text-align: center;">
+        <p style="color: #222; font-size: 10px; letter-spacing: 5px;">CORE WEB SYSTEM © 2026</p>
+    </footer>
+
+    <div id="alert">SISTEMA EN MANTENIMIENTO</div>
+
+    <script>
+        const basePlanes = [
+            {n: "Zombi", p: 2.50, r: "2GB", i: "https://cdn.discordapp.com/attachments/1420079817650475140/1460031349611302932/zombie.png?ex=69656fa7&is=69641e27&hm=996c23aa41f0d3a62a2ba945956bd5841522d94945436a7781997053dafc7535"},
+            {n: "Spider", p: 4.50, r: "4GB", i: "https://cdn.discordapp.com/attachments/1420079817650475140/1460031504930439320/spider.png?ex=69656fcc&is=69641e4c&hm=fd6e98cbc101aac0131ca4415ce2faee927ea655d2b74a1cadefa1f38176d079"},
+            {n: "Creeper", p: 7.00, r: "6GB", i: "https://cdn.discordapp.com/attachments/1420079817650475140/1460031524115185716/creeper_1.png?ex=69656fd1&is=69641e51&hm=89b23c147cf0ea86fa126d6170304e7ef9f5cb81287d7ebfdf059c263701b3ba"},
+            {n: "Wither", p: 10.00, r: "8GB", i: "https://cdn.discordapp.com/attachments/1420079817650475140/1460033985039302758/wither.png?ex=6965721c&is=6964209c&hm=aa198fb5a028dc3f8c92973cf9ddab33669e0b2bb1dc39ef7f4201c5ffc21120"},
+            {n: "Blaze", p: 15.00, r: "12GB", i: "https://cdn.discordapp.com/attachments/1420079817650475140/1460031568021295237/blaze_1.png?ex=69656fdb&is=69641e5b&hm=9525b9b3c06c6101926e4e74a07a3d2befd3f8ed9374b7055f6eb2d1d633dad1"},
+            {n: "Warden", p: 30.00, r: "32GB", i: "https://cdn.discordapp.com/attachments/1420079817650475140/1460034010289012877/warden.png?ex=69657222&is=696420a2&hm=c5e0e2d0fe59479be6bbcc98a57d4183bde300900180700601c437240bf3909a"}
+        ];
+
+        let timeFactor = 1; let discountFactor = 1; let currentCycle = "pago mensual";
+
+        function renderPlanes() {
+            const container = document.getElementById('planes-grid');
+            container.innerHTML = '';
+            basePlanes.forEach(p => {
+                const finalPrice = (p.p * timeFactor * discountFactor).toFixed(2);
+                container.innerHTML += `
+                    <div class="card">
+                        <img src="${p.i}" class="package-logo">
+                        <div class="p-name">${p.n.toUpperCase()}</div>
+                        <div class="p-price">$${finalPrice}<span> / ${currentCycle}</span></div>
+                        <ul class="specs">
+                            <li><i class="fa-solid fa-memory"></i> ${p.r} DDR5 RAM</li>
+                            <li><i class="fa-solid fa-shield-halved"></i> 2.5Tbps Anti-DDoS</li>
+                        </ul>
+                        <button class="lock-btn" onclick="showAlert()">BLOQUEADO</button>
+                    </div>`;
+            });
+        }
+
+        function updateBilling(type, months, discount, element) {
+            document.querySelectorAll('.billing-opt').forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+            timeFactor = months; discountFactor = discount;
+            currentCycle = type === 'weekly' ? "pago semanal" : type === 'monthly' ? "pago mensual" : type === 'quarterly' ? "pago trimestral" : "pago anual";
+            renderPlanes();
+        }
+
+        function showAlert() {
+            const a = document.getElementById('alert');
+            a.style.display = 'block';
+            setTimeout(() => { a.style.display = 'none'; }, 3000);
+        }
+
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        class Star {
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2; this.speed = Math.random() * 0.5; this.opacity = Math.random(); }
+            update() { this.y -= this.speed; if (this.y < 0) this.y = canvas.height; }
+            draw() { ctx.fillStyle = `rgba(191, 0, 255, ${this.opacity})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+        function initStars() { stars = []; for (let i = 0; i < 80; i++) stars.push(new Star()); }
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); stars.forEach(s => { s.update(); s.draw(); }); requestAnimationFrame(animate); }
+        window.addEventListener('resize', () => { resize(); initStars(); });
+        resize(); initStars(); animate();
+        renderPlanes();
+    </script>
+</body>
+</html>
